@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto di Mattia</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Auto di Mattia</h1>
+      <label for="carSelect">Scegli una macchina:</label>
+      <select id="carSelect">
+        <option value="">--Seleziona una macchina--</option>
+        <option value="sandero">Sandero</option>
+        <option value="mokka">Mokka</option>
+        <option value="panda">Panda</option>
+        <option value="500">500</option>
+      </select>
+
+      <label for="conditionSelect">Scegli la condizione:</label>
+      <select id="conditionSelect">
+        <option value="nuova">Nuova</option>
+        <option value="usata">Usata</option>
+        <option value="usata_garantita">Usata garantita</option>
+        <option value="km0">Km0</option>
+      </select>
+
+      <div class="car-info" id="carInfo"></div>
+    </div>
+
+    <script>
+      const carData = {
+        sandero: {
+          name: "Sandero",
+          price: 10000,
+          image: "img/sandero.jpg",
+        },
+        mokka: {
+          name: "Mokka",
+          price: 20000,
+          image: "img/opelmokka.jpg",
+        },
+        panda: {
+          name: "Panda",
+          price: 15000,
+          image: "img/panda.jpg",
+        },
+        500: {
+          name: "500",
+          price: 18000,
+          image: "img/500.jpg",
+        },
+      };
+
+      const discounts = {
+        nuova: 0,
+        usata: 0.35,
+        usata_garantita: 0.25,
+        km0: 0.1,
+      };
+
+      const carSelect = document.getElementById("carSelect");
+      const conditionSelect = document.getElementById("conditionSelect");
+      const carInfoDiv = document.getElementById("carInfo");
+
+      carSelect.addEventListener("change", updateCarInfo);
+      conditionSelect.addEventListener("change", updateCarInfo);
+
+      function updateCarInfo() {
+        const selectedCar = carSelect.value;
+        const selectedCondition = conditionSelect.value;
+
+        if (selectedCar && selectedCondition) {
+          const car = carData[selectedCar];
+          const discount = discounts[selectedCondition];
+          const finalPrice = car.price * (1 - discount);
+
+          carInfoDiv.innerHTML = `
+                    <img src="${car.image}" alt="${car.name}">
+                    <p><strong>Modello:</strong> ${car.name}</p>
+                    <p><strong>Prezzo:</strong> €${finalPrice.toFixed(2)}</p>
+                    <label for="rateNumber">Numero di rate:</label>
+                    <input type="number" id="rateNumber" min="1" step="1" placeholder="Inserisci numero di rate">
+                    <button onclick="calculateRate(${finalPrice.toFixed(
+                      2
+                    )})">Calcola Rata Mensile</button>
+                    <div id="rateResult"></div>
+                `;
+        } else {
+          carInfoDiv.innerHTML = "";
+        }
+      }
+
+      function calculateRate(finalPrice) {
+        const rateNumber = document.getElementById("rateNumber").value;
+        if (rateNumber && rateNumber > 0) {
+          const monthlyRate = finalPrice / rateNumber;
+          document.getElementById(
+            "rateResult"
+          ).innerHTML = `<p><strong>Rata Mensile:</strong> €${monthlyRate.toFixed(
+            2
+          )}</p>`;
+        } else {
+          document.getElementById(
+            "rateResult"
+          ).innerHTML = `<p style="color: red;">Inserisci un numero di rate valido.</p>`;
+        }
+      }
+    </script>
+  </body>
+</html>
